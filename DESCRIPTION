@@ -1,0 +1,21 @@
+Package: Phase1DesignDecision
+Type: Package
+Title: Interactive Phase I Dose-Finding Simulation Dashboard
+Version: 0.1.0
+Author: Luyuan Wang <researcher@example.com>
+Maintainer: Luyuan Wang <researcher@example.com>
+Description: Simulates, evaluates, and compares multiple Phase I dose-finding designs (3+3, CRM, BOIN) using powerful Monte Carlo simulations. Provides a fully interactive Shiny dashboard and exported programmatic simulation wrappers for clinical trial planning.
+License: MIT + file LICENSE
+Encoding: UTF-8
+RoxygenNote: 7.3.2
+Imports:
+    BOIN,
+    dfcrm,
+    dplyr,
+    ggplot2,
+    gt,
+    reshape2,
+    bslib,
+    shiny,
+    stats,
+    utils

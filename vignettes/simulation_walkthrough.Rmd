@@ -1,0 +1,80 @@
+---
+title: "Phase I Dose-Finding Simulation Walkthrough"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Phase I Dose-Finding Simulation Walkthrough}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+This vignette demonstrates how to use the `Phase1DesignDecision` package to execute automated simulation study plans for Phase I dose-finding clinical trials. We will evaluate 3 predefined toxicity scenarios (Increasing, Steep, and Flat curves) across the 3+3, CRM, and BOIN designs.
+
+## Setup
+
+First, load the package:
+```{r setup}
+library(Phase1DesignDecision)
+```
+
+## Running Predefined Scenarios
+
+We will set up our global baseline parameters for the trial.
+```{r parameters}
+target_tox <- 0.25
+max_n <- 36
+cohort_size <- 3
+num_sims <- 100 # Reduced for vignette speed
+```
+
+### Scenario A: Linear Increasing Curve
+This scenario tests a standard, steady escalation curve where the MTD is centrally located.
+
+```{r scenA, fig.width=7, fig.height=5}
+true_prob_A <- c(0.05, 0.10, 0.15, 0.25, 0.40, 0.55)
+
+# Run Monte Carlo Unified Simulations
+res_A <- run_unified_simulations(true_prob_A, target_tox, num_sims, max_n, cohort_size)
+
+# Display Patient Allocation
+plot_patient_allocation(res_A)
+```
+
+### Scenario B: Steep Curve
+This scenario mimics a drug that is safe at low doses but becomes extremely toxic abruptly after the MTD. It tests the designs' ability to safely halt escalation.
+
+```{r scenB, fig.width=7, fig.height=5}
+true_prob_B <- c(0.02, 0.05, 0.10, 0.25, 0.50, 0.80)
+res_B <- run_unified_simulations(true_prob_B, target_tox, num_sims, max_n, cohort_size)
+
+# Display Safety Profile (Underdose vs Overdose)
+plot_safety_profile(res_B)
+```
+
+### Scenario C: Flat Curve
+This scenario demonstrates a very safe drug that slowly creeps up in toxicity over many doses, testing the designs' efficiency at escalating to reach the true MTD without getting "stuck" at safe lower levels.
+
+```{r scenC, fig.width=7, fig.height=5}
+true_prob_C <- c(0.05, 0.10, 0.15, 0.18, 0.25, 0.30)
+res_C <- run_unified_simulations(true_prob_C, target_tox, num_sims, max_n, cohort_size)
+
+# Display Selection Probabilities
+plot_mtd_selection(res_C)
+```
+
+### Accessing Summary Metrics
+
+Raw operating characteristics can be extracted from the results list directly for use in standard reporting tables:
+
+```{r metrics}
+# Raw Summary Statistics Matrix
+print(res_A$metrics)
+```
